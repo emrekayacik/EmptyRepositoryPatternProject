@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Project.Data.Abstract;
@@ -29,6 +28,14 @@ namespace Project.WebUI
         {
             app.UseStaticFiles(); // wwwroot için
 
+            // node modules için
+            //app.UseStaticFiles(new StaticFileOptions 
+            //{
+            //    FileProvider = new PhysicalFileProvider( 
+            //        Path.Combine(Directory.GetCurrentDirectory(), "node_modules")),
+            //    RequestPath = "/modules"
+            //});
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -38,10 +45,10 @@ namespace Project.WebUI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                );
             });
         }
     }
